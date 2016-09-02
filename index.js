@@ -305,7 +305,7 @@ var updatePlaylist = function () {
 
   list.entries.forEach(function (entry, i) {
     html += '<div class="playlist-entry ' + (i % 2 ? 'odd ' : '') + (list.selected === entry ? 'selected ' : '') + '" data-index="' + i + '" data-id="' + entry.id + '">' +
-      '<span>' + entry.name + '</span><span class="status"></span></div>'
+      '<span>' + entry.name + '</span><span class="status"></span><span style="display: block; float: right; cursor: pointer" class="playlist-entry-remove" data-id="' + entry.id + '"><i class="js-icon ion-close"></i></span></div>'
   })
 
   $('#playlist-entries')[0].innerHTML = html
@@ -708,6 +708,13 @@ volumeSlider.setAttribute("step", 0.05)
 updateAudioVolume(0.5)
 updateVolumeSlider(volumeSlider)
 
+$('#controls-volume span').on('click', function (e) {
+  updateAudioVolume(0.5)
+  var volume = $('#controls-volume-slider')[0]
+  volume.value = 0.5
+  updateVolumeSlider(volume)
+})
+
 var pbrateSlider = $('#controls-pbrate-slider')[0]
 pbrateSlider.setAttribute("value", 1)
 pbrateSlider.setAttribute("min", 0.5)
@@ -715,3 +722,10 @@ pbrateSlider.setAttribute("max", 4)
 pbrateSlider.setAttribute("step", 0.25)
 updatePlaybackRate(1)
 updatePlaybackRateSlider(pbrateSlider)
+
+$('#controls-pbrate span').on('click', function (e) {
+  updatePlaybackRate(1)
+  var volume = $('#controls-pbrate-slider')[0]
+  volume.value = 1
+  updatePlaybackRateSlider(volume)
+})
