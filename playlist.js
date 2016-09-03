@@ -7,6 +7,8 @@ var path = require('path')
 var fs = require('fs')
 var vtt = require('srt-to-vtt')
 var concat = require('concat-stream')
+var crypto = require('crypto')
+var _ = require('underscore')
 
 var noop = function () {}
 
@@ -36,7 +38,8 @@ module.exports = function () {
         f.downloadSpeed = torrent.downloadSpeed()
         if (/\.(mp4|mkv|mp3)$/i.test(f.name)) {
           f.select()
-          f.id = that.entries.push(f) - 1
+          f.id = crypto.randomBytes(8).toString('hex')
+          that.entries.push(f)
 
           var basename = f.name.substr(0, f.name.lastIndexOf('.'))
           var subtitle = subtitles[basename + '.srt'] || subtitles[basename + '.vtt']
@@ -94,7 +97,8 @@ module.exports = function () {
           var stream = duplex()
           return stream
         }
-        file.id = that.entries.push(file) - 1
+        file.id = crypto.randomBytes(8).toString('hex')
+        that.entries.push(file)
         that.emit('update')
         cb()
       })
@@ -119,7 +123,7 @@ module.exports = function () {
           if (fmt.itag === '44') return vidFmt = fmt
           if (fmt.itag === '43') return vidFmt = fmt
 
-          // otherwise h264
+          // otherwise h28
           if (fmt.itag === '38') return vidFmt = fmt
           if (fmt.itag === '37') return vidFmt = fmt
           if (fmt.itag === '22') return vidFmt = fmt
@@ -145,7 +149,8 @@ module.exports = function () {
         return fs.createReadStream(link, opts)
       }
 
-      file.id = that.entries.push(file) - 1
+      file.id = crypto.randomBytes(8).toString('hex')
+      that.entries.push(file)
 
       var ondone = function () {
         that.emit('update')
@@ -192,7 +197,8 @@ module.exports = function () {
       if (!/2\d\d/.test(response.statusCode)) return cb(new Error('request failed'))
 
       file.length = Number(response.headers['content-length'])
-      file.id = that.entries.push(file) - 1
+      file.id = crypto.randomBytes(8).toString('hex')
+      that.entries.push(file)
       that.emit('update')
       cb()
     })
@@ -233,23 +239,40 @@ module.exports = function () {
 
   that.selectNext = function (loop) {
     if (!that.entries.length) return null
-    if (!that.selected) return that.select(0)
+    if (!that.selected) return that.selectByIndex(0)
     if (that.repeatingOne && !loop) return that.select(that.selected.id)
     if (that.selected.id === that.entries.length - 1) {
-      if (that.repeating || loop) return that.select(0)
+      if (that.repeating || loop) return that.selectByIndex(0)
       else return null
     }
-    return that.select(that.selected.id + 1)
+    return that.selectByIndex(that.entries.indexOf(that.selected) + 1)
   }
 
   that.selectPrevious = function (loop) {
     if (!that.entries.length) return null
-    if (!that.selected) return that.select(that.entries.length - 1)
-    if (that.selected.id === 0) {
-      if (that.repeating || loop) return that.select(that.entries.length - 1)
+    if (!that.selected) return that.selectByIndex(that.entries.length - 1)
+    if (that.entries.indexOf(that.selected) === 0) {
+      if (that.repeating || loop) return that.selectByIndex(that.entries.length - 1)
       else return null
     }
-    return that.select(that.selected.id - 1)
+    return that.selectByIndex(that.entries.indexOf(that.selected) - 1)
+  }
+
+  that.remove = function (id) {
+    if (that.entries.length <= 1) {
+      return;
+    }
+
+    that.entries = _.without(that.entries, _.findWhere(that.entries, {id: id}))
+    that.selected = that.selectByIndex(0)
+    that.emit('select')
+    return that.selected
+  }
+
+  that.selectByIndex = function (index) {
+    that.selected = that.entries[index]
+    that.emit('select')
+    return that.selected
   }
 
   that.select = function (id) {
@@ -259,7 +282,7 @@ module.exports = function () {
   }
 
   that.get = function (id) {
-    return that.entries[id]
+    return _.findWhere(that.entries, {id: id})
   }
 
   that.add = function (link, cb) {

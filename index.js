@@ -305,7 +305,7 @@ var updatePlaylist = function () {
 
   list.entries.forEach(function (entry, i) {
     html += '<div class="playlist-entry ' + (i % 2 ? 'odd ' : '') + (list.selected === entry ? 'selected ' : '') + '" data-index="' + i + '" data-id="' + entry.id + '">' +
-      '<span>' + entry.name + '</span><span class="status"></span><span style="display: block; float: right; cursor: pointer" class="playlist-entry-remove" data-id="' + entry.id + '"><i class="js-icon ion-close"></i></span></div>'
+      '<span>' + entry.name + '</span><span class="status"></span><a style="display: block; float: right; cursor: pointer" class="playlist-entry-remove" data-id="' + entry.id + '"><i class="js-icon ion-close"></i></a></div>'
   })
 
   $('#playlist-entries')[0].innerHTML = html
@@ -343,7 +343,7 @@ setInterval(updateSpeeds, 750)
 list.on('update', updatePlaylist)
 
 list.once('update', function () {
-  list.select(0)
+  list.selectByIndex(0)
 })
 
 var popupSelected = function () {
@@ -360,8 +360,13 @@ var closePopup = function (e) {
 $('#controls').on('click', closePopup)
 $('#idle').on('click', closePopup)
 
+$('#playlist-entries').on('click', '.playlist-entry-remove', function (e) {
+  var id = this.getAttribute('data-id')
+  list.remove(id)
+})
+
 $('#playlist-entries').on('click', '.playlist-entry', function (e) {
-  var id = Number(this.getAttribute('data-id'))
+  var id = this.getAttribute('data-id')
   list.select(id)
 })
 
@@ -604,7 +609,7 @@ var server = http.createServer(function (req, res) {
     return
   }
 
-  var id = Number(req.url.slice(1))
+  var id = req.url.slice(1)
   var file = list.get(id)
 
   if (!file) {

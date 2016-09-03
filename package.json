@@ -7,6 +7,7 @@
     "JSONStream": "^0.10.0",
     "chromecasts": "^1.2.1",
     "concat-stream": "^1.4.7",
+    "crypto": "0.0.3",
     "dombo": "^3.2.0",
     "drag-and-drop-files": "0.0.1",
     "duplexify": "^3.2.0",
@@ -22,6 +23,7 @@
     "roboto-fontface": "^0.4.2",
     "srt-to-vtt": "^1.0.2",
     "titlebar": "^1.1.0",
+    "underscore": "^1.8.3",
     "webtorrent": "^0.63.3",
     "ytdl-core": "^0.5.1"
   },
