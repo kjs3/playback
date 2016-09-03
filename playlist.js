@@ -123,7 +123,7 @@ module.exports = function () {
           if (fmt.itag === '44') return vidFmt = fmt
           if (fmt.itag === '43') return vidFmt = fmt
 
-          // otherwise h28
+          // otherwise h264
           if (fmt.itag === '38') return vidFmt = fmt
           if (fmt.itag === '37') return vidFmt = fmt
           if (fmt.itag === '22') return vidFmt = fmt
