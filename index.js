@@ -305,7 +305,7 @@ var updatePlaylist = function () {
 
   list.entries.forEach(function (entry, i) {
     html += '<div class="playlist-entry ' + (i % 2 ? 'odd ' : '') + (list.selected === entry ? 'selected ' : '') + '" data-index="' + i + '" data-id="' + entry.id + '">' +
-      '<span>' + entry.name + '</span><span class="status"></span><a style="display: block; float: right; cursor: pointer" class="playlist-entry-remove" data-id="' + entry.id + '"><i class="js-icon ion-close"></i></a></div>'
+      '<span>' + entry.name + '</span><span class="status"></span><a style="display: block; cursor: pointer" class="playlist-entry-remove right" data-id="' + entry.id + '"><i class="js-icon ion-close"></i></a></div>'
   })
 
   $('#playlist-entries')[0].innerHTML = html

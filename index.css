@@ -1,3 +1,6 @@
+
+/* OLD GREEN COLOR: #31A357 */
+
 body, html {
   margin: 0;
   padding: 0;
@@ -149,7 +152,7 @@ body, html {
 }
 
 .playlist-entry.selected, .chromecast-entry.selected {
-  background-color: #31A357;
+  background-color: #3180C1;
 }
 
 #popup .header {
@@ -163,7 +166,7 @@ body, html {
 
 #popup .button {
   margin: 10px;
-  background-color: #31A357;
+  background-color: #3180C1;
   padding: 10px;
   text-align: center;
   color: #E1E1E1;
@@ -251,7 +254,7 @@ body:hover #overlay, body:hover .titlebar {
 }
 
 #controls-timeline-position {
-  background-color: #31A357;
+  background-color: #3180C1;
   width: 0%;
   height: 10px;
   transition: width 0.25s linear;
@@ -276,7 +279,7 @@ body:hover #overlay, body:hover .titlebar {
 
 #controls-repeat.repeating .mega-ion:before,
 #controls-repeat.repeating .mega-ion:after {
-  color: #31A357;
+  color: #3180C1;
 }
 
 #controls-repeat.one .mega-ion:after {
@@ -297,7 +300,7 @@ body:hover #overlay, body:hover .titlebar {
 #controls-play span:hover .mega-ion, #player-downloadspeed span:hover .mega-ion,
 #controls-fullscreen span:hover .mega-ion, #controls-playlist span:hover .mega-ion,
 #controls-chromecast span:hover .mega-ion {
-  color: #31A357;
+  color: #3180C1;
 }
 
 #controls-chromecast .chromecast {
@@ -326,7 +329,7 @@ body:hover #overlay, body:hover .titlebar {
 }
 
 #controls-playlist.selected .mega-ion {
-  color: #31A357;
+  color: #3180C1;
 }
 
 .mega-ion:before {
@@ -335,7 +338,7 @@ body:hover #overlay, body:hover .titlebar {
 }
 
 #controls-play .mega-ion {
-  color: #31A357;
+  color: #3180C1;
 }
 
 #controls-time {
@@ -379,7 +382,7 @@ body:hover #overlay, body:hover .titlebar {
 
 .slider::-webkit-slider-thumb {
   -webkit-appearance: none;
-  background-color: #31A357;
+  background-color: #3180C1;
   opacity: 1.0;
   width: 7px;
   height: 7px;
