@@ -37,6 +37,8 @@ var onsubs = function (data) {
 }
 
 ipc.on('add-to-playlist', function (links) {
+  console.log(links)
+
   links.forEach(function (link) {
     if (/\.(vtt|srt)$/i.test(link)) {
       fs.createReadStream(link).pipe(vtt()).pipe(concat(onsubs))
