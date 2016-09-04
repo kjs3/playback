@@ -17,7 +17,7 @@ var onopen = function (e, lnk) {
   e.preventDefault()
 
   if (ready) {
-    win.send('add-to-playlist', [].concat(lnk))
+    win.send('add-to-playlist', [])
     return
   }
 
@@ -38,6 +38,8 @@ app.on('ready', function () {
     show: false,
     transparent: true
   })
+
+  win.toggleDevTools()
 
   win.loadURL('file://' + path.join(__dirname, 'index.html#' + JSON.stringify(process.argv.slice(2))))
 
@@ -87,7 +89,7 @@ app.on('ready', function () {
 
   ipc.on('ready', function () {
     ready = true
-    if (link) win.send('add-to-playlist', [].concat(link))
+    if (link) win.send('add-to-playlist', [])
     win.show()
   })
 
