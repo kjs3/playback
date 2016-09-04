@@ -8,6 +8,7 @@ var dialog = require('dialog')
 var shell = require('shell')
 var powerSaveBlocker = require('electron').powerSaveBlocker
 var globalShortcut = require('electron').globalShortcut
+var _ = require('underscore')
 
 var win
 var link
@@ -17,7 +18,7 @@ var onopen = function (e, lnk) {
   e.preventDefault()
 
   if (ready) {
-    win.send('add-to-playlist', [].push(lnk))
+    win.send('add-to-playlist', [].concat(lnk))
     return
   }
 
@@ -87,7 +88,7 @@ app.on('ready', function () {
 
   ipc.on('ready', function () {
     ready = true
-    if (link) win.send('add-to-playlist', [].push(link))
+    if (link) win.send('add-to-playlist', [].concat(link))
     win.show()
   })
 

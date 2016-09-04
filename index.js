@@ -36,7 +36,9 @@ var onsubs = function (data) {
   media.subtitles(data)
 }
 
-ipc.on('add-to-playlist', function (links) {
+ipc.on('add-to-playlist', function (event, links) {
+  console.log(links)
+
   links.forEach(function (link) {
     if (/\.(vtt|srt)$/i.test(link)) {
       fs.createReadStream(link).pipe(vtt()).pipe(concat(onsubs))
@@ -48,7 +50,7 @@ ipc.on('add-to-playlist', function (links) {
 })
 
 $(document).on('paste', function (e) {
-  ipc.emit('add-to-playlist', e.clipboardData.getData('text').split('\n'))
+  ipc.emit('add-to-playlist', null, e.clipboardData.getData('text').split('\n'))
 })
 
 var media = player($('#player')[0])
@@ -106,7 +108,7 @@ $(window).on('contextmenu', function (e) {
   menu.append(new MenuItem({
     label: 'Paste link',
     click: function () {
-      ipc.emit('add-to-playlist', clipboard.readText().split('\n'))
+      ipc.emit('add-to-playlist', null, clipboard.readText().split('\n'))
     }
   }))
 
@@ -228,7 +230,7 @@ function updateAudioVolume(value) {
 
 function updateVolumeSlider(volume) {
   var val = volume.value * 100
-  volume.style.background = '-webkit-gradient(linear, left top, right top, color-stop(' + val.toString() + '%, #31A357), color-stop(' + val.toString() + '%, #727374))'
+  volume.style.background = '-webkit-gradient(linear, left top, right top, color-stop(' + val.toString() + '%, #3180C1), color-stop(' + val.toString() + '%, #727374))'
 }
 
 function updatePlaybackRate(value) {
@@ -240,7 +242,7 @@ function updatePlaybackRateSlider(volume) {
   var max = 4
   var scaled = (volume.value - min) / (max - min)
   var val = scaled * 100
-  volume.style.background = '-webkit-gradient(linear, left top, right top, color-stop(' + val.toString() + '%, #31A357), color-stop(' + val.toString() + '%, #727374))'
+  volume.style.background = '-webkit-gradient(linear, left top, right top, color-stop(' + val.toString() + '%, #3180C1), color-stop(' + val.toString() + '%, #727374))'
 }
 
 $('#controls-volume-slider').on('mousemove', function (e) {
@@ -470,7 +472,7 @@ var appmenu_template = [
       {
         label: 'Add link from clipboard',
         accelerator: 'CommandOrControl+V',
-        click: function () { ipc.emit('add-to-playlist', clipboard.readText().split('\n')) }
+        click: function () { ipc.emit('add-to-playlist', null, clipboard.readText().split('\n')) }
       }
     ]
   },
