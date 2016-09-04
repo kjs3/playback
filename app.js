@@ -8,7 +8,6 @@ var dialog = require('dialog')
 var shell = require('shell')
 var powerSaveBlocker = require('electron').powerSaveBlocker
 var globalShortcut = require('electron').globalShortcut
-var _ = require('underscore')
 
 var win
 var link
