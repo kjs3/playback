@@ -741,92 +741,92 @@ $('#controls-pbrate span').on('click', function (e) {
   updatePlaybackRateSlider(volume)
 })
 
-const MOVIES_API_URL = 'https://yts.ag/api/v2/list_movies.json?query_term=';
-const MOVIE_INFO_API_URL = 'https://yts.ag/api/v2/movie_details.json?movie_id=';
-const TV_API_URL = 'https://popcorntime.ws/api/eztv/shows/1?keywords=';
-const TV_SHOW_API_URL = 'https://popcorntime.ws/api/eztv/show/';
+const MOVIES_API_URL = 'https://yts.ag/api/v2/list_movies.json?query_term='
+const MOVIE_INFO_API_URL = 'https://yts.ag/api/v2/movie_details.json?movie_id='
+const TV_API_URL = 'https://popcorntime.ws/api/eztv/shows/1?keywords='
+const TV_SHOW_API_URL = 'https://popcorntime.ws/api/eztv/show/'
 
-var requestify = require('requestify');
+var requestify = require('requestify')
 
 $('#close-search').on('click', function () {
-  $('#search-overlay')[0].setAttribute('style', 'display: none');
-});
+  $('#search-overlay')[0].setAttribute('style', 'display: none')
+})
 
 $('#controls-search').on('click', function () {
-  $('#search-overlay')[0].setAttribute('style', 'display: flex');
-});
+  $('#search-overlay')[0].setAttribute('style', 'display: flex')
+})
 
 $('#search-results').on('click', '.search-result', function () {
-  var stub = $(this)[0].innerHTML;
+  var stub = $(this)[0].innerHTML
 
   if (stub.startsWith('MOVIE')) {
     requestify.get(MOVIE_INFO_API_URL + this.getAttribute('data-id')).then(function (response) {
-      var torrents = response.getBody().data.movie.torrents;
-      var magnet = 'magnet:?xt=urn:btih:' + torrents[0].hash + '&dn=movie';
+      var torrents = response.getBody().data.movie.torrents
+      var magnet = 'magnet:?xt=urn:btih:' + torrents[0].hash + '&dn=movie'
 
-      $('#search-overlay')[0].setAttribute('style', 'display: none');
+      $('#search-overlay')[0].setAttribute('style', 'display: none')
 
-      ipc.emit('add-to-playlist', null, [magnet]);
-    });
+      ipc.emit('add-to-playlist', null, [magnet])
+    })
   } else if (stub.startsWith('TV-SHOW')) {
-    $('#search-results')[0].innerHTML = '<center><span class=\'js-icon mega-ion ion-load-c rotating\'></span></center>';
+    $('#search-results')[0].innerHTML = '<center><span class=\'js-icon mega-ion ion-load-c rotating\'></span></center>'
 
     requestify.get(TV_SHOW_API_URL + this.getAttribute('data-imdb')).then(function (response) {
-      var body = response.getBody();
+      var body = response.getBody()
 
-      var html = '<div class=\'search-result\' style=\'text-align: center\'>SHOW: ' + body.title + '</div>';
+      var html = '<div class=\'search-result\' style=\'text-align: center\'>SHOW: ' + body.title + '</div>'
 
       body.episodes.forEach(function (episode) {
         html += '<div class=\'search-result\' data-magnet=\'' + episode.torrents['0'].url + '\'>EPISODE | Season ' + episode.season + ' Episode ' + episode.episode + ' - ' + episode.title + '</div>'
-      });
+      })
 
-      $('#search-results')[0].innerHTML = html;
-    });
+      $('#search-results')[0].innerHTML = html
+    })
   } else if (stub.startsWith('EPISODE')) {
-    $('#search-overlay')[0].setAttribute('style', 'display: none');
+    $('#search-overlay')[0].setAttribute('style', 'display: none')
 
-    ipc.emit('add-to-playlist', null, [this.getAttribute('data-magnet')]);
+    ipc.emit('add-to-playlist', null, [this.getAttribute('data-magnet')])
   }
-});
+})
 
 $('#search-button').on('click', function (e) {
-  var query = $('#search-input')[0].value;
+  var query = $('#search-input')[0].value
 
-  $('#search-results')[0].innerHTML = '<center><span class=\'js-icon mega-ion ion-load-c rotating\'></span></center>';
+  $('#search-results')[0].innerHTML = '<center><span class=\'js-icon mega-ion ion-load-c rotating\'></span></center>'
 
-  var html = '';
+  var html = ''
 
   requestify.get(MOVIES_API_URL + query).then(function (response) {
-    var data = response.getBody().data;
+    var data = response.getBody().data
 
     if (data.movie_count > 0) {
       data.movies.forEach(function (movie) {
         html += '<div class=\'search-result\' data-imdb=\'' + movie.imdb_code + '\' data-id=\'' + movie.id + '\'>MOVIE | ' + movie.title + '</div>'
-      });
+      })
     }
 
     requestify.get(TV_API_URL + query).then(function (response) {
-      var body = response.getBody();
+      var body = response.getBody()
 
       if (body.length > 0) {
         body.forEach(function (show) {
           html += '<div class=\'search-result\' data-imdb=\'' + show.imdb_id + '\'>TV-SHOW | ' + show.title + '</div>'
-        });
+        })
       }
 
-      $('#search-results')[0].innerHTML = html;
-    });
-  });
-});
+      $('#search-results')[0].innerHTML = html
+    })
+  })
+})
 
 media.on('show-loading', function () {
   if ($('#loading')[0].style.display === 'none') {
-    $('#loading')[0].setAttribute('style', 'display: flex');
+    $('#loading')[0].setAttribute('style', 'display: flex')
   }
-});
+})
 
 media.on('hide-loading', function () {
   if ($('#loading')[0].style.display === 'flex') {
-    $('#loading')[0].setAttribute('style', 'display: none');
+    $('#loading')[0].setAttribute('style', 'display: none')
   }
-});
+})

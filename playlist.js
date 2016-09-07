@@ -33,7 +33,7 @@ module.exports = function () {
 
       torrent.files.forEach(function (f) {
         if (/\.(vtt|srt)$/i.test(f.name)) {
-          subtitles[f.name] = f;
+          subtitles[f.name] = f
         }
       })
 
@@ -259,7 +259,7 @@ module.exports = function () {
 
   that.remove = function (id) {
     if (that.entries.length <= 1) {
-      return;
+      return
     }
 
     that.entries = _.without(that.entries, _.findWhere(that.entries, {id: id}))
