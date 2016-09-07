@@ -410,4 +410,9 @@ body:hover #overlay, body:hover .titlebar {
 #controls-name {
   float: left;
   margin-left: 20px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 35%;
 }
