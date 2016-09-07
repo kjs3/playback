@@ -303,6 +303,10 @@ list.on('select', function () {
 var updatePlaylist = function () {
   var html = ''
 
+  if (list.selected === null && list.entries.length > 0) {
+    list.selectByIndex(0)
+  }
+
   if (list.loadingTorrents > 0) {
     for (var x = 0; x < list.loadingTorrents; x++) {
       html += '<div class="playlist-entry"><i>Loading Torrent...</i></div>'
