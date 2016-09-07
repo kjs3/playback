@@ -12,6 +12,14 @@ module.exports = function ($video) {
   that.height = 0
   that.element = $video
 
+
+  $video.onwaiting = function() {
+    that.emit('show-loading')
+  };
+  $video.onplaying = function() {
+    that.emit('hide-loading')
+  };
+
   var chromecast = null
   var chromecastTime = 0
   var chromecastOffset = 0

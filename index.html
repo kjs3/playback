@@ -17,6 +17,9 @@
       <div id="search-button">Search!</div>
     </div>
     <video id="player" class="hidden"></video>
+    <div id="loading" style="display: none">
+      <span class="js-icon mega-ion ion-load-c rotating"></span>
+    </div>
     <div id="overlay">
       <div id="popup">
         <div id="playlist-popup">
@@ -76,5 +79,14 @@
       </div>
     </div>
     <script src="index.js"></script>
+    <script>
+    	document.addEventListener("keydown", function (e) {
+    		if (e.which === 123) {
+    			require('remote').getCurrentWindow().toggleDevTools();
+    		} else if (e.which === 116) {
+    			location.reload();
+    		}
+    	});
+    </script>
   </body>
 </html>

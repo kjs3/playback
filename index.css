@@ -88,6 +88,21 @@ body, html {
   align-items: center; /* align vertical */
 }
 
+#loading {
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
+
+  background: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  color: #fff;
+}
+
 #search-results {
   height: 60%;
   overflow: auto;
@@ -473,6 +488,11 @@ body:hover #overlay, body:hover .titlebar {
 #controls-name {
   float: left;
   margin-left: 20px;
+  display: inline-block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 35%;
 }
 
 .rotating {

@@ -285,7 +285,7 @@ $(document).on('keydown', function (e) {
   if (e.keyCode === 27 && isFullscreen) return onfullscreentoggle(e)
   if (e.keyCode === 13 && e.metaKey) return onfullscreentoggle(e)
   if (e.keyCode === 13 && e.shiftKey) return onfullscreentoggle(e)
-  if (e.keyCode === 32) return onplaytoggle(e)
+  if (e.keyCode === 32 && $('#search-overlay')[0].style.display === 'none') return onplaytoggle(e)
 
   if ($('#controls-playlist').hasClass('selected')) $('#controls-playlist').trigger('click')
   if ($('#controls-chromecast').hasClass('selected')) $('#controls-chromecast').trigger('click')
@@ -301,7 +301,7 @@ list.on('select', function () {
 })
 
 var updatePlaylist = function () {
-  if (typeof list.selected === 'undefined') {
+  if (list.selected === null && list.entries.length > 0) {
     list.selectByIndex(0)
   }
 
@@ -309,7 +309,7 @@ var updatePlaylist = function () {
 
   if (list.loadingTorrents > 0) {
     for (var x = 0; x < list.loadingTorrents; x++) {
-      html += '<div class="playlist-entry"><i>Loading Torrent...</i></div>'
+      html += '<div class="playlist-entry"><i>Loading Torrent #' + (x + 1) + '... (This may take a minute)</i></div>'
     }
   }
 
@@ -817,4 +817,16 @@ $('#search-button').on('click', function (e) {
       $('#search-results')[0].innerHTML = html;
     });
   });
+});
+
+media.on('show-loading', function () {
+  if ($('#loading')[0].style.display === 'none') {
+    $('#loading')[0].setAttribute('style', 'display: flex');
+  }
+});
+
+media.on('hide-loading', function () {
+  if ($('#loading')[0].style.display === 'flex') {
+    $('#loading')[0].setAttribute('style', 'display: none');
+  }
 });
