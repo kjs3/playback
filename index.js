@@ -762,11 +762,13 @@ $('#search-results').on('click', '.search-result', function () {
   if (stub.startsWith('MOVIE')) {
     requestify.get(MOVIE_INFO_API_URL + this.getAttribute('data-id')).then(function (response) {
       var torrents = response.getBody().data.movie.torrents
-      var magnet = 'magnet:?xt=urn:btih:' + torrents[0].hash + '&dn=movie'
+      if (torrents[0]) {
+        var magnet = 'magnet:?xt=urn:btih:' + torrents[0].hash + '&dn=movie'
 
-      $('#search-overlay')[0].setAttribute('style', 'display: none')
+        $('#search-overlay')[0].setAttribute('style', 'display: none')
 
-      ipc.emit('add-to-playlist', null, [magnet])
+        ipc.emit('add-to-playlist', null, [magnet])
+      }
     })
   } else if (stub.startsWith('TV-SHOW')) {
     $('#search-results')[0].innerHTML = '<center><span class=\'js-icon mega-ion ion-load-c rotating\'></span></center>'
@@ -777,7 +779,9 @@ $('#search-results').on('click', '.search-result', function () {
       var html = '<div class=\'search-result\' style=\'text-align: center\'>SHOW: ' + body.title + '</div>'
 
       body.episodes.forEach(function (episode) {
-        html += '<div class=\'search-result\' data-magnet=\'' + episode.torrents['0'].url + '\'>EPISODE | Season ' + episode.season + ' Episode ' + episode.episode + ' - ' + episode.title + '</div>'
+        if (episode.torrents['0']) {
+          html += '<div class=\'search-result\' data-magnet=\'' + episode.torrents['0'].url + '\'>EPISODE | Season ' + episode.season + ' Episode ' + episode.episode + ' - ' + episode.title + '</div>'
+        }
       })
 
       $('#search-results')[0].innerHTML = html
