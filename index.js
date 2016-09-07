@@ -303,6 +303,12 @@ list.on('select', function () {
 var updatePlaylist = function () {
   var html = ''
 
+  if (list.loadingTorrents > 0) {
+    for (var x = 0; x < list.loadingTorrents; x++) {
+      html += '<div class="playlist-entry"><i>Loading Torrent...</i></div>'
+    }
+  }
+
   list.entries.forEach(function (entry, i) {
     html += '<div class="playlist-entry ' + (i % 2 ? 'odd ' : '') + (list.selected === entry ? 'selected ' : '') + '" data-index="' + i + '" data-id="' + entry.id + '">' +
       '<span>' + entry.name + '</span><span class="status"></span><a style="display: block; cursor: pointer" class="playlist-entry-remove right" data-id="' + entry.id + '"><i class="js-icon ion-close"></i></a></div>'
@@ -341,10 +347,6 @@ var updateSpeeds = function () {
 setInterval(updateSpeeds, 750)
 
 list.on('update', updatePlaylist)
-
-list.once('update', function () {
-  list.selectByIndex(0)
-})
 
 var popupSelected = function () {
   return $('#controls-playlist').hasClass('selected') || $('#controls-chromecast').hasClass('selected')
