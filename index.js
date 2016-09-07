@@ -285,7 +285,7 @@ $(document).on('keydown', function (e) {
   if (e.keyCode === 27 && isFullscreen) return onfullscreentoggle(e)
   if (e.keyCode === 13 && e.metaKey) return onfullscreentoggle(e)
   if (e.keyCode === 13 && e.shiftKey) return onfullscreentoggle(e)
-  if (e.keyCode === 32) return onplaytoggle(e)
+  if (e.keyCode === 32 && $('#search-overlay')[0].style.display === 'none') return onplaytoggle(e)
 
   if ($('#controls-playlist').hasClass('selected')) $('#controls-playlist').trigger('click')
   if ($('#controls-chromecast').hasClass('selected')) $('#controls-chromecast').trigger('click')
@@ -301,20 +301,20 @@ list.on('select', function () {
 })
 
 var updatePlaylist = function () {
-  var html = ''
-
   if (list.selected === null && list.entries.length > 0) {
     list.selectByIndex(0)
   }
 
+  var html = ''
+
   if (list.loadingTorrents > 0) {
     for (var x = 0; x < list.loadingTorrents; x++) {
-      html += '<div class="playlist-entry"><i>Loading Torrent...</i></div>'
+      html += '<div class="playlist-entry"><i>Loading Torrent #' + (x + 1) + '... (This may take a minute)</i></div>'
     }
   }
 
   list.entries.forEach(function (entry, i) {
-    html += '<div class="playlist-entry ' + (i % 2 ? 'odd ' : '') + (list.selected === entry ? 'selected ' : '') + '" data-index="' + i + '" data-id="' + entry.id + '">' +
+    html += '<div class="playlist-entry ' + (list.selected === entry ? 'selected ' : '') + '" data-index="' + i + '" data-id="' + entry.id + '">' +
       '<span>' + entry.name + '</span><span class="status"></span><a style="display: block; cursor: pointer" class="playlist-entry-remove right" data-id="' + entry.id + '"><i class="js-icon ion-close"></i></a></div>'
   })
 
@@ -325,7 +325,7 @@ var updateChromecast = function () {
   var html = ''
 
   chromecasts.players.forEach(function (player, i) {
-    html += '<div class="chromecast-entry ' + (i % 2 ? 'odd ' : '') + (media.casting === player ? 'selected ' : '') + '" data-index="' + i + '" data-id="' + i + '">' +
+    html += '<div class="chromecast-entry ' + (media.casting === player ? 'selected ' : '') + '" data-index="' + i + '" data-id="' + i + '">' +
       '<span>' + player.name + '</span>'
   })
 
@@ -739,4 +739,98 @@ $('#controls-pbrate span').on('click', function (e) {
   var volume = $('#controls-pbrate-slider')[0]
   volume.value = 1
   updatePlaybackRateSlider(volume)
+})
+
+const MOVIES_API_URL = 'https://yts.ag/api/v2/list_movies.json?query_term='
+const MOVIE_INFO_API_URL = 'https://yts.ag/api/v2/movie_details.json?movie_id='
+const TV_API_URL = 'https://popcorntime.ws/api/eztv/shows/1?keywords='
+const TV_SHOW_API_URL = 'https://popcorntime.ws/api/eztv/show/'
+
+var requestify = require('requestify')
+
+$('#close-search').on('click', function () {
+  $('#search-overlay')[0].setAttribute('style', 'display: none')
+})
+
+$('#controls-search').on('click', function () {
+  $('#search-overlay')[0].setAttribute('style', 'display: flex')
+})
+
+$('#search-results').on('click', '.search-result', function () {
+  var stub = $(this)[0].innerHTML
+
+  if (stub.startsWith('MOVIE')) {
+    requestify.get(MOVIE_INFO_API_URL + this.getAttribute('data-id')).then(function (response) {
+      var torrents = response.getBody().data.movie.torrents
+      if (torrents[0]) {
+        var magnet = 'magnet:?xt=urn:btih:' + torrents[0].hash + '&dn=movie'
+
+        $('#search-overlay')[0].setAttribute('style', 'display: none')
+
+        ipc.emit('add-to-playlist', null, [magnet])
+      }
+    })
+  } else if (stub.startsWith('TV-SHOW')) {
+    $('#search-results')[0].innerHTML = '<center><span class=\'js-icon mega-ion ion-load-c rotating\'></span></center>'
+
+    requestify.get(TV_SHOW_API_URL + this.getAttribute('data-imdb')).then(function (response) {
+      var body = response.getBody()
+
+      var html = '<div class=\'search-result\' style=\'text-align: center\'>SHOW: ' + body.title + '</div>'
+
+      body.episodes.forEach(function (episode) {
+        if (episode.torrents['0']) {
+          html += '<div class=\'search-result\' data-magnet=\'' + episode.torrents['0'].url + '\'>EPISODE | Season ' + episode.season + ' Episode ' + episode.episode + ' - ' + episode.title + '</div>'
+        }
+      })
+
+      $('#search-results')[0].innerHTML = html
+    })
+  } else if (stub.startsWith('EPISODE')) {
+    $('#search-overlay')[0].setAttribute('style', 'display: none')
+
+    ipc.emit('add-to-playlist', null, [this.getAttribute('data-magnet')])
+  }
+})
+
+$('#search-button').on('click', function (e) {
+  var query = $('#search-input')[0].value
+
+  $('#search-results')[0].innerHTML = '<center><span class=\'js-icon mega-ion ion-load-c rotating\'></span></center>'
+
+  var html = ''
+
+  requestify.get(MOVIES_API_URL + query).then(function (response) {
+    var data = response.getBody().data
+
+    if (data.movie_count > 0) {
+      data.movies.forEach(function (movie) {
+        html += '<div class=\'search-result\' data-imdb=\'' + movie.imdb_code + '\' data-id=\'' + movie.id + '\'>MOVIE | ' + movie.title + '</div>'
+      })
+    }
+
+    requestify.get(TV_API_URL + query).then(function (response) {
+      var body = response.getBody()
+
+      if (body.length > 0) {
+        body.forEach(function (show) {
+          html += '<div class=\'search-result\' data-imdb=\'' + show.imdb_id + '\'>TV-SHOW | ' + show.title + '</div>'
+        })
+      }
+
+      $('#search-results')[0].innerHTML = html
+    })
+  })
+})
+
+media.on('show-loading', function () {
+  if ($('#loading')[0].style.display === 'none') {
+    $('#loading')[0].setAttribute('style', 'display: flex')
+  }
+})
+
+media.on('hide-loading', function () {
+  if ($('#loading')[0].style.display === 'flex') {
+    $('#loading')[0].setAttribute('style', 'display: none')
+  }
 })

@@ -9,7 +9,17 @@
   </head>
   <body>
     <div id="splash"></div>
+    <div id="search-overlay" style="display: none">
+      <span class="js-icon mega-ion ion-close" id="close-search"></span>
+      <h1>Torrent Search</h1>
+      <div id="search-results"></div>
+      <input type="text" id="search-input"></input>
+      <div id="search-button">Search!</div>
+    </div>
     <video id="player" class="hidden"></video>
+    <div id="loading" style="display: none">
+      <span class="js-icon mega-ion ion-load-c rotating"></span>
+    </div>
     <div id="overlay">
       <div id="popup">
         <div id="playlist-popup">
@@ -55,6 +65,9 @@
           <div id="player-downloadspeed"></div>
           <div id="controls-playlist">
             <span class="button"><span class="js-icon mega-ion ion-navicon"></span></span>
+          </div>
+          <div id="controls-search">
+            <span class="button"><span class="js-icon mega-ion ion-search"></span></span>
           </div>
           <div id="controls-chromecast">
             <span class="button"><span class="chromecast"></span></span>

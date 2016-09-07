@@ -19,7 +19,6 @@ module.exports = function () {
   that.loadingTorrents = 0
 
   var onmagnet = function (link, cb) {
-    console.log('torrent ' + link)
     that.loadingTorrents += 1
     that.emit('update')
 
@@ -34,7 +33,7 @@ module.exports = function () {
 
       torrent.files.forEach(function (f) {
         if (/\.(vtt|srt)$/i.test(f.name)) {
-          subtitles[f.name] = f;
+          subtitles[f.name] = f
         }
       })
 
@@ -55,10 +54,6 @@ module.exports = function () {
         }
 
       })
-
-      setInterval(function () {
-        console.log(torrent.downloadSpeed() + ' (' + torrent.swarm.wires.length + ')')
-      }, 1000)
 
       that.emit('update')
       cb()
@@ -264,7 +259,7 @@ module.exports = function () {
 
   that.remove = function (id) {
     if (that.entries.length <= 1) {
-      return;
+      return
     }
 
     that.entries = _.without(that.entries, _.findWhere(that.entries, {id: id}))
