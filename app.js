@@ -110,7 +110,6 @@ app.on('ready', function () {
   globalShortcut.register('MediaPreviousTrack', function () {
     win.send('media-previous-track')
   })
-
 })
 
 app.on('will-quit', function () {

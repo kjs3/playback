@@ -16,9 +16,11 @@ module.exports = function () {
   var that = new events.EventEmitter()
 
   that.entries = []
+  that.loadingTorrents = 0
 
   var onmagnet = function (link, cb) {
-    console.log('torrent ' + link)
+    that.loadingTorrents += 1
+    that.emit('update')
 
     var engine = torrents()
     var subtitles = {}
@@ -27,6 +29,7 @@ module.exports = function () {
       announce: [ 'wss://tracker.webtorrent.io' ]
     }, function (torrent) {
       console.log('torrent ready')
+      that.loadingTorrents -= 1
 
       torrent.files.forEach(function (f) {
         if (/\.(vtt|srt)$/i.test(f.name)) {
@@ -51,10 +54,6 @@ module.exports = function () {
         }
 
       })
-
-      setInterval(function () {
-        console.log(torrent.downloadSpeed() + ' (' + torrent.swarm.wires.length + ')')
-      }, 1000)
 
       that.emit('update')
       cb()

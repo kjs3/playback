@@ -72,6 +72,68 @@ body, html {
   transition: opacity 0.3s ease;
 }
 
+#search-overlay {
+  background: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  z-index: 9999;
+  color: #fff;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
+}
+
+#search-results {
+  height: 60%;
+  overflow: auto;
+  width: 80%;
+}
+
+#close-search {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+
+.search-result {
+  color: #fff;
+  font-size: 13px;
+  padding: 10px 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background-color: #333;
+}
+
+.search-result:nth-child(odd) {
+  background-color: #222324;
+}
+
+#search-input {
+  padding: 7.5px;
+  border: 2px solid #eee;
+  border-radius: 3px;
+  font-family: 'Roboto';
+  width: 80%;
+  height: 18px;
+  margin-top: 10px;
+}
+
+#search-button {
+  margin: 10px;
+  background-color: #3180C1;
+  padding: 10px;
+  text-align: center;
+  color: #E1E1E1;
+  border-radius: 3px;
+  width: 80%;
+}
+
 #popup.chromecast #chromecast-popup {
   display: block;
 }
@@ -147,7 +209,7 @@ body, html {
   transform: rotate(45deg);
 }
 
-.playlist-entry.odd, .chromecast-entry.odd {
+.playlist-entry:nth-child(odd), .chromecast-entry:nth-child(odd) {
   background-color: #222324;
 }
 
@@ -264,7 +326,7 @@ body:hover #overlay, body:hover .titlebar {
   padding: 6px 10px 0 0;
 }
 
-#player-downloadspeed, #controls-playlist, #controls-chromecast {
+#player-downloadspeed, #controls-playlist, #controls-chromecast, #controls-search {
   margin-right: 11px;
 }
 
@@ -287,19 +349,20 @@ body:hover #overlay, body:hover .titlebar {
   padding-left: 2px;
 }
 
-#controls-play, #controls-repeat, #player-downloadspeed, #controls-fullscreen, #controls-playlist, #controls-chromecast {
+#controls-play, #controls-repeat, #player-downloadspeed, #controls-fullscreen, #controls-playlist, #controls-chromecast, #controls-search {
   float: left;
 }
 
 #controls-play .mega-ion, #player-downloadspeed .mega-ion,
-#controls-fullscreen .mega-ion, #controls-playlist .mega-ion {
+#controls-fullscreen .mega-ion, #controls-playlist .mega-ion,
+#controls-search .mega-ion {
   /* this is the click buffer */
   padding: 3px 6px;
 }
 
 #controls-play span:hover .mega-ion, #player-downloadspeed span:hover .mega-ion,
 #controls-fullscreen span:hover .mega-ion, #controls-playlist span:hover .mega-ion,
-#controls-chromecast span:hover .mega-ion {
+#controls-chromecast span:hover .mega-ion, #controls-search span:hover .mega-ion {
   color: #3180C1;
 }
 
@@ -410,4 +473,24 @@ body:hover #overlay, body:hover .titlebar {
 #controls-name {
   float: left;
   margin-left: 20px;
+}
+
+.rotating {
+  -webkit-animation: spin 1s infinite linear;
+  -ms-animation: spin 1s infinite linear;
+  -moz-animation: spin 1s infinite linear;
+  -o-animation: spin 1s infinite linear;
+}
+
+@-moz-keyframes spin {
+    from { -moz-transform: rotate(0deg); }
+    to { -moz-transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+    from { -webkit-transform: rotate(0deg); }
+    to { -webkit-transform: rotate(360deg); }
+}
+@keyframes spin {
+    from {transform:rotate(0deg);}
+    to {transform:rotate(360deg);}
 }
