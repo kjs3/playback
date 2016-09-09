@@ -1,8 +1,8 @@
 {
   "name": "playback",
-  "version": "1.6.0",
+  "version": "1.8.0-beta",
   "description": "Video player built using electron and node.js",
-  "main": "app.js",
+  "main": "./src/app.js",
   "dependencies": {
     "JSONStream": "^0.10.0",
     "chromecasts": "^1.2.1",
@@ -33,14 +33,14 @@
     "electron-prebuilt": "0.35.4"
   },
   "bin": {
-    "playback": "./app.js"
+    "playback": "./src/app.js"
   },
   "scripts": {
     "rebuild": "npm rebuild --runtime=electron --target=0.35.4 --disturl=https://atom.io/download/atom-shell",
-    "start": "electron app.js",
-    "dev": "electron app.js test.mp4",
-    "mac-bundle": "electron-packager . Playback --platform=darwin --arch=x64 --version=0.35.4 --ignore=node_modules/electron-prebuilt && cp info.plist Playback-darwin-x64/Playback.app/Contents/Info.plist && cp icon.icns Playback-darwin-x64/Playback.app/Contents/Resources/atom.icns",
-    "win-bundle": "electron-packager . Playback --platform=win32 --arch=ia32 --version=0.35.4 --icon=icon.ico",
+    "start": "electron ./src/app.js",
+    "dev": "electron ./src/app.js test.mp4",
+    "mac-bundle": "electron-packager . Playback --platform=darwin --arch=x64 --version=0.35.4 --ignore=node_modules/electron-prebuilt && cp info.plist Playback-darwin-x64/Playback.app/Contents/Info.plist && cp ./src/assets/images/icon.icns Playback-darwin-x64/Playback.app/Contents/Resources/atom.icns",
+    "win-bundle": "electron-packager . Playback --platform=win32 --arch=ia32 --version=0.35.4 --icon=./src/assets/images/icon.ico",
     "linux-64-bundle": "electron-packager . Playback --platform=linux --arch=x64 --version=0.35.4 ignore='node_modules/(electron-packager|electron-prebuilt)'"
   },
   "repository": {
